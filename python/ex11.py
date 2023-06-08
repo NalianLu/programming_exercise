@@ -2,7 +2,7 @@
 """
 Created on Tue Jun  6 08:57:02 2023
 
-@author: Group 2
+@author: Norah Lu
 """
 
 n = int(input('Please enter the maximum denominator: '))
