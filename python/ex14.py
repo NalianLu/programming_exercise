@@ -2,7 +2,7 @@
 """
 Created on Tue Jun  6 08:39:18 2023
 
-@author: Group 2
+@author: Norah Lu
 """
 # package
 import math
