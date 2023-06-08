@@ -2,7 +2,7 @@
 """
 Created on Mon Jun  5 15:49:52 2023
 
-@author: Group 2
+@author: Norah Lu
 """
 
 # input
