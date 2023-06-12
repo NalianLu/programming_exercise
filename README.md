@@ -1,1 +1,5 @@
-# programming_exercise
+# Programming Excercises
+
+- Python
+- R
+- SQL
