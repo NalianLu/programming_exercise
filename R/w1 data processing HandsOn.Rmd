@@ -1,0 +1,58 @@
+---
+title: "Data Processing Hands On Practice"
+output: pdf_document
+---
+
+## Setup
+
+Load necessary package(s) and import the ```income1``` and ```income2``` datasets into R. The ```income1``` dataset contains demographics information of 30162 individuals, and the ```income2``` dataset contains income information for the same set of individuals.
+```{r}
+library(dplyr)
+income1 = read.csv("income1.csv")
+income2 = read.csv("income2.csv")
+income = left_join(income1, income2, by='id')
+```
+
+
+## Answer the following questions. You need to decide which dataset(s) to use.
+
+Q1. How many male and female individuals are there in the dataset, and what is the average age for each gender group?
+```{r}
+income %>% group_by(sex) %>%
+  summarise(n = n(),
+            ave_age = mean(age))
+```
+
+
+Q2. What are the maximum and minimum working hours per **day** (assuming a 5-day work week) for each occupation?
+```{r}
+income %>% mutate(hours.per.day = hours.per.week/5) %>% 
+  group_by(occupation) %>%
+  summarise(max_hpd = max(hours.per.day),
+            min_hpd = min(hours.per.day))
+
+```
+
+
+Q3. Find the average working hours per week for each education level, then rank the results by average working hours from long to short.
+```{r}
+income %>% group_by(education) %>%
+  summarise(ave_hpw = mean(hours.per.week)) %>% 
+  arrange(desc(ave_hpw))
+
+```
+
+Q4. How many people, whose wages are higher than 50K, are there in each work class?
+```{r}
+income %>% group_by(workclass) %>%
+  filter(wage == '>50K') %>%
+  summarise(n = n())
+
+```
+
+
+Q5. Among males who are older than 40, what proportion makes less than 50K?
+```{r}
+
+
+```

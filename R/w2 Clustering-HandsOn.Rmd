@@ -1,0 +1,102 @@
+---
+title: "Clustering Analysis Hands On Practices"
+output: pdf_document
+---
+
+
+### Setup
+In this exercise, we use the "iris.csv" file. 
+```{r}
+library(stats)
+library(dplyr)
+library(cluster)
+library(ggplot2)
+# import the dataset
+iris = read.csv("iris.csv")
+```
+
+
+### Q1: Normalize the data. Note that only the first four columns are relevant for clustering!
+```{r}
+normalize = function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+# apply normalize function to column #1-4
+iris_normalized = iris %>% mutate(across(1:4, normalize))
+```
+
+
+### Q2: Apply Hierarchical Clustering. Think about how to prepare the input. Use euclidean distance and Ward's method
+```{r}
+# distance matrix
+distance_matrix = dist(iris_normalized[,1:4], method = "euclidean")
+# to view the resulting distance matrix, run the following
+View(as.matrix(distance_matrix))
+# Notes: 11175 = 150*149/2 (distinct & not null)
+
+# hierarchical clustering using ward's method
+hierarchical = hclust(distance_matrix, method = "ward.D")
+
+```
+
+
+### Q3: Plot the dendrogram. No need to specify the label parameter. How many clusters do you think is appropriate? Mark the cluster solution of your choice.
+```{r}
+plot(hierarchical)
+
+# 3 clusters is appropriate
+rect.hclust(hierarchical, k = 3)
+
+```
+
+
+### Q4: take the 3-cluster solution based on hierarchical clustering and add it to the original dataframe. Then, compare the cluster membership with the "class" column. What do you see? Why?
+```{r}
+# show me the 3-cluster solution!
+iris_normalized$cluster = cutree(hierarchical, k = 3)
+# compare class and cluster
+iris_normalized %>% group_by(class, cluster) %>%
+summarise(n())
+# let's check out cluster centroids
+iris_normalized %>% group_by(cluster) %>%
+summarise_at(1:4,mean)
+
+```
+3: big flowers
+1: small petals
+2: mid-sized flowers
+
+### Q5: Next, apply K-Means Clustering. Choose 3 as the number of clusters then report the cluster centroids.
+```{r}
+kcluster = kmeans(iris_normalized[,1:4], centers = 3)
+kcluster$centers
+
+```
+
+
+### Q6: Based on cluster centroids, interpret/characterize each cluster using your own words. This question does not require coding.
+(randomly assigned cluster index)
+Cluster 1 (3 above): long and middle-wide sepal  , long and wide petal
+Cluster 2 (2 above): middle long and narrow sepal, middle long and middle wide petal
+Cluster 3 (1 above): short and wide sepal, short and narrow petal
+
+
+### Q7: Is 3 the most natural cluster number? Make a plot of SSE against 1 - 10 clusters. Based on the SSE plot, how many clusters do you think there are?
+```{r}
+SSE_curve <- c()
+for (n in 1:10) {
+  kcluster = kmeans(iris_normalized[,1:4], n)
+  sse = kcluster$tot.withinss # tot.withinss shows SSE
+  SSE_curve[n] = sse
+  # Notes: or use SSE_curve = c(SSE_curve, kcluster$tot.withinss)
+  }
+# Notes:
+# for loop only makes sense for partition-based method like K-mean.
+# Hierarchical shows all the results at the first time.
+
+# plot SSE against number of clusters
+plot(1:10, SSE_curve, type = "b")
+
+```
+4 clusters
