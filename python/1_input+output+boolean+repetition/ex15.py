@@ -1,44 +1,30 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun  5 15:49:52 2023
+weight_0 = float(input('Starting weight (kg): '))
+goal = float(input('Goal weight (kg): '))
+weekly_deficit_c = float(input('Weekly calorie deficit: '))
 
-@author: Norah Lu
-"""
-
-# input
-item = input('Description of the item: ')
-cost = float(input('Cost of the item: '))
-life = float(input('Estimated life of the item in whole years: '))
-method = int(input('Depreciation method (1 = straight line, 2 = double declining balance): '))
+weekly_deficit_kg = weekly_deficit_c/7700
 
 # initialize
-year = 0
-begin = cost
-dep = 0
-end = begin-dep
+wk = 0
+weight = weight_0
+lost_kg = 0
+pct = (lost_kg/weight_0)*100
 
-# openning
-print('Depreciation schedule for:', item)
-print('Year', 'Begin  ', 'Dep    ', 'End    ')
-print('{0:<} {1:<.2f} {2:<.2f} {3:<.2f}'.format(year, begin, dep, end))
+print('Wk Weight (kg) Lost (kg)    Pct')
+print('-- ----------- ---------    ---')
+print('{:2d} {:11.1f} {:9.1f} {:5.1f}%'.format(wk, weight, lost_kg, pct))
 
-# calculation
-if method == 1:
-    dep = cost/life
-    while year < life:
-        end = begin-dep
-        year += 1
-        print('{0:<} {1:<.2f} {2:<.2f} {3:<.2f}'.format(year, begin, dep, end))
-        begin = end
-elif method == 2:
-    while year < life-1:
-        dep = 2*begin/life
-        end = begin-dep
-        year += 1
-        print('{0:<} {1:<.2f} {2:<.2f} {3:<.2f}'.format(year, begin, dep, end))
-        begin = end
-    # last year
-    year += 1
-    dep = begin
-    end = begin-dep
-    print('{0:<} {1:<.2f} {2:<.2f} {3:<.2f}'.format(year, begin, dep, end))
+
+while weight > goal:
+
+    weight -= weekly_deficit_kg
+    lost_kg += weekly_deficit_kg
+
+    if weight <= goal:
+        weight = goal
+        lost_kg = weight_0 - goal
+
+    pct = (lost_kg/weight_0)*100
+    wk += 1
+
+    print('{:2d} {:11.1f} {:9.1f} {:5.1f}%'.format(wk, weight, lost_kg, pct))
